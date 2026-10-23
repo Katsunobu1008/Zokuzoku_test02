@@ -5,6 +5,7 @@ Reference: user's supplied PICSY chapter 4, especially equations 4.60–4.65.
 from __future__ import annotations
 
 from typing import Sequence
+import math
 
 EPS = 1e-9
 
@@ -14,7 +15,7 @@ def validate_e(matrix: Sequence[Sequence[float]]) -> None:
     if n < 2 or any(len(row) != n for row in matrix):
         raise ValueError('E must be an NxN matrix with N >= 2')
     for row in matrix:
-        if any(not isinstance(v, (int, float)) or v < 0 or v > 1 for v in row):
+        if any(not isinstance(v, (int, float)) or not math.isfinite(v) or v < 0 or v > 1 for v in row):
             raise ValueError('entries must be between zero and one')
         if abs(sum(row) - 1.0) > 1e-7:
             raise ValueError('each row of E must sum to one')
@@ -50,7 +51,7 @@ def transaction(matrix: Sequence[Sequence[float]], buyer: int, seller: int,
     n = len(matrix)
     if not 0 <= buyer < n or not 0 <= seller < n or buyer == seller:
         raise ValueError('buyer and seller must be different valid actors')
-    if not isinstance(amount, (int, float)) or amount <= 0 or amount > matrix[buyer][buyer] + EPS:
+    if not isinstance(amount, (int, float)) or not math.isfinite(amount) or amount <= 0 or amount > matrix[buyer][buyer] + EPS:
         raise ValueError('amount exceeds available budget')
     result = [list(row) for row in matrix]
     result[buyer][buyer] -= amount
@@ -62,7 +63,7 @@ def transaction(matrix: Sequence[Sequence[float]], buyer: int, seller: int,
 def natural_recovery(matrix: Sequence[Sequence[float]], gamma: float) -> list[list[float]]:
     """E(t+1)=(1-gamma) E(t)+gamma I (equations 4.9–4.10)."""
     validate_e(matrix)
-    if not 0 <= gamma <= 1:
+    if not math.isfinite(gamma) or not 0 <= gamma <= 1:
         raise ValueError('gamma must be in [0,1]')
     return [[(1-gamma)*v + (gamma if i == j else 0) for j, v in enumerate(row)]
             for i, row in enumerate(matrix)]
