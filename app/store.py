@@ -30,6 +30,9 @@ class Store:
     def __init__(self, path: str):
         self.path = path
         Path(path).parent.mkdir(parents=True, exist_ok=True)
+        # SQLite journal mode is persistent; set it before transactional setup.
+        with sqlite3.connect(path) as conn:
+            conn.execute('PRAGMA journal_mode=WAL')
         self._setup()
 
     @contextmanager
