@@ -1,0 +1,17 @@
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      ZOKU_HOST: 0.0.0.0
+      ZOKU_DB: /srv/data/zokuzoku.sqlite
+      ZOKU_MEDIA_DIR: /srv/data/media
+      ZOKU_DEMO_MODE: "1"
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_IMAGE_MODEL: ${OPENAI_IMAGE_MODEL:-gpt-image-1-mini}
+    volumes:
+      - data:/srv/data
+    restart: unless-stopped
+volumes:
+  data:

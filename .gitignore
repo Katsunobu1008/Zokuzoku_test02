@@ -1,0 +1,22 @@
+# Never commit credentials or user-generated media.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+secrets.*
+data/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+venv/
+coverage/
+.DS_Store
+.idea/
+.vscode/
+*.log
