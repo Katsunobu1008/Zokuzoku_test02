@@ -26,8 +26,8 @@ def _call(url: str, body: bytes, content_type: str) -> bytes:
         if not obj.get('data') or not obj['data'][0].get('b64_json'):
             raise ImageProviderError('Image API returned an unexpected response')
         content = base64.b64decode(obj['data'][0]['b64_json'], validate=True)
-        if len(content) < 100 or len(content) > 12 * 1024 * 1024:
-            raise ImageProviderError('Unexpected image size')
+        if len(content) < 100 or len(content) > 12 * 1024 * 1024 or not content.startswith(b'\x89PNG\r\n\x1a\n'):
+            raise ImageProviderError('Unexpected PNG image response')
         return content
     except urllib.error.HTTPError as e:
         # Do not return provider error body (which may echo submitted prompts).

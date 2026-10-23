@@ -33,6 +33,8 @@ class TestPicsy(unittest.TestCase):
         with self.assertRaises(ValueError):transaction(self.e,0,1,.9)
         with self.assertRaises(ValueError):virtual_bank([[1,1],[0,1]])
         with self.assertRaises(ValueError):natural_recovery(self.e,2)
+        with self.assertRaises(ValueError):virtual_bank([[float("nan"), .5],[.5,.5]])
+        with self.assertRaises(ValueError):transaction(self.e,0,1,float("nan"))
 
     def test_example_changes(self):
         d=demo_three_person()
